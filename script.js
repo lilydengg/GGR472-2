@@ -49,6 +49,75 @@ map.on("load", () => {
         if (feature.properties.COUNT > maxCollisions) {
             maxCollisions = feature.properties.COUNT;
         }
+            // Fetch the cycling network GeoJSON and add it as a layer (data taken from Toronto Open Data https://open.toronto.ca/dataset/cycling-network/)
+    fetch('https://raw.githubusercontent.com/lilydengg/GGR472-Lab-4/main/data/cycling-network%20-%204326.geojson')
+        .then(response => response.json())
+        .then(cyclingData => {
+            // Add the source to the map
+            map.addSource("cyclingNetwork", {
+                type: "geojson",
+                data: cyclingData
+            });
+
+            // Add a line layer to represent the cycling network
+            map.addLayer({
+                id: "cyclingNetwork",
+                type: "line",
+                source: "cyclingNetwork",
+                layout: { 'visibility': 'visible' }, // so the cycling network starts visible
+                paint: {
+                    "line-color": "#1f78b4",  // Blue color for cycling paths
+                    "line-width": 2,
+                    "line-opacity": 0.8
+                }
+            });
+
+            /*** ADD LEGEND ***/
+            const legend = document.getElementById("legend");
+            legend.innerHTML = ""; // Clear previous legend
+
+            // Collision data legend
+            const legendCategories = [
+                { color: "#def3ec", label: "0 - 9 collisions" },
+                { color: "#88d9be", label: "10 - 49 collisions" },
+                { color: "#4cae8d", label: "50 - " + (maxCollisions - 1) + " collisions" },
+                { color: "#207457", label: maxCollisions + "+ collisions" }
+            ];
+
+            legendCategories.forEach(category => {
+                const item = document.createElement("div");
+                item.className = "legend-item";
+
+                const colorBox = document.createElement("div");
+                colorBox.className = "legend-color";
+                colorBox.style.backgroundColor = category.color;
+
+                const label = document.createElement("span");
+                label.textContent = category.label;
+
+                item.appendChild(colorBox);
+                item.appendChild(label);
+                legend.appendChild(item);
+            });
+
+            // Cycling network legend
+            const cyclingLegendItem = document.createElement("div");
+            cyclingLegendItem.className = "legend-item";
+
+            const cyclingLine = document.createElement("div");
+            cyclingLine.className = "legend-line";
+            cyclingLine.style.background = "#1f78b4"; // Blue color for cycling network
+            cyclingLine.style.width = "18px";
+            cyclingLine.style.height = "4px"; // Thin line
+
+            const cyclingLabel = document.createElement("span");
+            cyclingLabel.textContent = "Cycling Network";
+
+            cyclingLegendItem.appendChild(cyclingLine);
+            cyclingLegendItem.appendChild(cyclingLabel);
+            legend.appendChild(cyclingLegendItem);
+        })
+        .catch(error => console.error("Error loading cycling network data:", error));
     });
 
     // Add hex grid source to map
@@ -178,75 +247,7 @@ document.getElementById('cyclingcheck').addEventListener('change', (e) => {
 });
 
 
-    // Fetch the cycling network GeoJSON and add it as a layer (data taken from Toronto Open Data https://open.toronto.ca/dataset/cycling-network/)
-    fetch('https://raw.githubusercontent.com/lilydengg/GGR472-Lab-4/main/data/cycling-network%20-%204326.geojson')
-        .then(response => response.json())
-        .then(cyclingData => {
-            // Add the source to the map
-            map.addSource("cyclingNetwork", {
-                type: "geojson",
-                data: cyclingData
-            });
 
-            // Add a line layer to represent the cycling network
-            map.addLayer({
-                id: "cyclingNetwork",
-                type: "line",
-                source: "cyclingNetwork",
-                layout: { 'visibility': 'visible' }, // so the cycling network starts visible
-                paint: {
-                    "line-color": "#1f78b4",  // Blue color for cycling paths
-                    "line-width": 2,
-                    "line-opacity": 0.8
-                }
-            });
-
-            /*** ADD LEGEND ***/
-            const legend = document.getElementById("legend");
-            legend.innerHTML = ""; // Clear previous legend
-
-            // Collision data legend
-            const legendCategories = [
-                { color: "#def3ec", label: "0 - 9 collisions" },
-                { color: "#88d9be", label: "10 - 49 collisions" },
-                { color: "#4cae8d", label: "50 - " + (maxCollisions - 1) + " collisions" },
-                { color: "#207457", label: maxCollisions + "+ collisions" }
-            ];
-
-            legendCategories.forEach(category => {
-                const item = document.createElement("div");
-                item.className = "legend-item";
-
-                const colorBox = document.createElement("div");
-                colorBox.className = "legend-color";
-                colorBox.style.backgroundColor = category.color;
-
-                const label = document.createElement("span");
-                label.textContent = category.label;
-
-                item.appendChild(colorBox);
-                item.appendChild(label);
-                legend.appendChild(item);
-            });
-
-            // Cycling network legend
-            const cyclingLegendItem = document.createElement("div");
-            cyclingLegendItem.className = "legend-item";
-
-            const cyclingLine = document.createElement("div");
-            cyclingLine.className = "legend-line";
-            cyclingLine.style.background = "#1f78b4"; // Blue color for cycling network
-            cyclingLine.style.width = "18px";
-            cyclingLine.style.height = "4px"; // Thin line
-
-            const cyclingLabel = document.createElement("span");
-            cyclingLabel.textContent = "Cycling Network";
-
-            cyclingLegendItem.appendChild(cyclingLine);
-            cyclingLegendItem.appendChild(cyclingLabel);
-            legend.appendChild(cyclingLegendItem);
-        })
-        .catch(error => console.error("Error loading cycling network data:", error));
 });
 
 // Pop-up for collision hex grid
