@@ -34,13 +34,15 @@ fetch('https://raw.githubusercontent.com/lilydengg/GGR472-Lab-4/main/data/pedcyc
 /*--------------------------------------------------------------------
 Step 3: CREATE BOUNDING BOX AND HEXGRID
 --------------------------------------------------------------------*/
-
+// Wait for the map to load before adding layers
 map.on("load", () => {
+    // Generate a bounding box around the collision data
     let bboxresult = turf.bbox(collisionData);
+    // Create a hexagonal grid covering the bounding box, each hexagon is 0.5 km
     let hexdata = turf.hexGrid(bboxresult, 0.5, { units: "kilometers" });
-
+    // Aggregate collision data into hexagons using Turf.js collect function
     let collishex = turf.collect(hexdata, collisionData, "_id", "values");
-
+    // Calculate the maximum number of collisions in a single hexagon
     let maxCollisions = 0;
     collishex.features.forEach((feature) => {
         feature.properties.COUNT = feature.properties.values.length;
@@ -54,7 +56,7 @@ map.on("load", () => {
         type: "geojson",
         data: collishex
     });
-
+    // Add the hex grid as a fill layer, with color coding based on collision counts
     map.addLayer({
         'id': 'collishexgrid',
         'type': 'fill',
@@ -83,7 +85,7 @@ ADD INTERACTIVITY BASED ON HTML EVENT
 // 1) Toggle legend display based on checkbox
 let legendcheck = document.getElementById('legendcheck');
 let legend = document.getElementById('legend'); // Ensure you have this element in your HTML
-
+// Add event listener to checkbox to show/hide legend
 legendcheck.addEventListener('click', () => {
     if (legendcheck.checked) {
         legend.style.display = 'block';

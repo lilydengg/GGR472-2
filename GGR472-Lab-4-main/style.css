@@ -1,3 +1,4 @@
+/* Style for the map container */
 .map {
     position: absolute;
     top: 0;
@@ -6,6 +7,7 @@
     right: 0;
     width: 100%;
 }
+/* Style for the map data container */
 .map-data-container { /*style the panel for map filters and controls*/
     position: relative;
     background: rgba(255, 255, 255, 0.8);
@@ -17,6 +19,9 @@
     border-radius: 8px;
     overflow: visible;
 }
+/*--------------------------------------------------------------------
+Legend Styling (For displaying map data categories)
+--------------------------------------------------------------------*/
 .legend {
     position: absolute;
     bottom: 20px;
@@ -30,7 +35,7 @@
     line-height: 18px;
     color: #333;
 }
-
+/* Style for each individual item in the legend */
 .legend-item {
     display: flex;
     align-items: center;
@@ -49,13 +54,14 @@
     margin-right: 5px;
     border: 1px solid #000;
 }
+/* Styles option labels (e.g., checkboxes for toggling layers) */
 .option-label {
     display: block;
     font-weight: bold;
     margin-bottom: 10px; /* Adjust space below the title */
     font-size: 16px;
 }
-
+/* Styles control container */
 .controls {
     margin-top: 15px; /* Adjust space between the title and checkboxes */
 }
