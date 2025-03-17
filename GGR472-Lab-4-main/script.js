@@ -92,6 +92,71 @@ legendcheck.addEventListener('click', () => {
     }
 });
 
+// Function to update the legend dynamically
+function updateLegend() {
+    const legend = document.getElementById("legend");
+    legend.innerHTML = ""; // Clear existing legend
+
+    // Get checkbox states
+    const collisionChecked = document.getElementById('collisioncheck').checked;
+    const cyclingChecked = document.getElementById('cyclingcheck').checked;
+
+    if (collisionChecked) {
+        // Collision data legend
+        const legendCategories = [
+            { color: "#def3ec", label: "0 - 9 collisions" },
+            { color: "#88d9be", label: "10 - 49 collisions" },
+            { color: "#4cae8d", label: "50 - " + (maxCollisions - 1) + " collisions" },
+            { color: "#207457", label: maxCollisions + "+ collisions" }
+        ];
+
+        legendCategories.forEach(category => {
+            const item = document.createElement("div");
+            item.className = "legend-item";
+
+            const colorBox = document.createElement("div");
+            colorBox.className = "legend-color";
+            colorBox.style.backgroundColor = category.color;
+
+            const label = document.createElement("span");
+            label.textContent = category.label;
+
+            item.appendChild(colorBox);
+            item.appendChild(label);
+            legend.appendChild(item);
+        });
+    }
+
+    if (cyclingChecked) {
+        // Cycling network legend
+        const cyclingLegendItem = document.createElement("div");
+        cyclingLegendItem.className = "legend-item";
+
+        const cyclingLine = document.createElement("div");
+        cyclingLine.className = "legend-line";
+        cyclingLine.style.background = "#1f78b4"; // Blue color for cycling network
+        cyclingLine.style.width = "18px";
+        cyclingLine.style.height = "4px"; // Thin line
+
+        const cyclingLabel = document.createElement("span");
+        cyclingLabel.textContent = "Cycling Network";
+
+        cyclingLegendItem.appendChild(cyclingLine);
+        cyclingLegendItem.appendChild(cyclingLabel);
+        legend.appendChild(cyclingLegendItem);
+    }
+
+    // Hide legend if no layers are selected
+    legend.style.display = (collisionChecked || cyclingChecked) ? 'block' : 'none';
+}
+
+// Update legend on checkbox change
+document.getElementById('collisioncheck').addEventListener('change', updateLegend);
+document.getElementById('cyclingcheck').addEventListener('change', updateLegend);
+
+// Initialize legend on page load
+updateLegend();
+
 // 2) Toggle Collision Hexgrid Layer
 document.getElementById('collisioncheck').addEventListener('change', (e) => {
     map.setLayoutProperty(
